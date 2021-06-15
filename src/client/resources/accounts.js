@@ -5,13 +5,18 @@
  *
  * @instance
  * @memberof TDAmeritrade
+ * @param {string|string[]} fields Additional fields to return. Options include positions,orders
  * @returns {Promise<any>} List of all accounts
  *
  * @example
  * const accounts = await td.getAccounts()
  */
-function getAccounts() {
-    return this.axios.get('/accounts')
+function getAccounts(fields) {
+    return this.axios.get('/accounts', {
+        params: {
+            fields: [].concat(fields).join(',')
+        }
+    })
 } // getAccounts()
 
 /**
@@ -20,13 +25,18 @@ function getAccounts() {
  * @instance
  * @memberof TDAmeritrade
  * @param {string} accountId The account id
+ * @param {string|string[]} fields Additional fields to return. Options include positions,orders
  * @returns {Promise<any>} The requested account
  *
  * @example
  * const acctInfo = await td.getAccount('45678')
  */
-function getAccount(accountId) {
-    return this.axios.get(`/accounts/${accountId}`)
+function getAccount(accountId, fields) {
+    return this.axios.get(`/accounts/${accountId}`, {
+        params: {
+            fields: [].concat(fields).join(',')
+        }
+    })
 } // getAccount()
 
 /**
