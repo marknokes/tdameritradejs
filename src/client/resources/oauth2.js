@@ -41,7 +41,7 @@ function authorize() {
             this.getAccessToken(decodeURIComponent(_url.query.code.toString()))
                 .then(data => {
                     res.writeHead(200, { 'Content-Type': 'text/html' })
-                    res.write('OK')
+                    res.write('Money, money, money! Happy trading!')
                     res.end()
                     server.close()
                     resolve(data)
