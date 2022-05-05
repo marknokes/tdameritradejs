@@ -91,7 +91,7 @@ function login(auth) {
     } else if (this.isAccessTokenExpired()) {
         return this.refreshAccessToken(null, createNewRefreshToken = false)
     } else {
-        return Promise.resolve()
+        return Promise.resolve(this.config.accessToken)
     }
 
 } // login()

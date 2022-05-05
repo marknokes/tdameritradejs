@@ -30,7 +30,7 @@ function once(fn, context) {
  * @example
  * const token = await td.getAccessToken('authorization-code-goes-here')
  */
-function getAccessToken(authCode) {
+async function getAccessToken(authCode) {
     const params = new URLSearchParams()
     params.append('grant_type', 'authorization_code')
     params.append('access_type', this.config.accessType || 'offline')
@@ -40,7 +40,9 @@ function getAccessToken(authCode) {
 
     delete this.config.accessToken
 
-    return this.axios.post('/oauth2/token', params)
+    await this.axios.post('/oauth2/token', params)
+
+    return this.config.accessToken
 } // getAccessToken()
 
 /**
@@ -55,7 +57,7 @@ function getAccessToken(authCode) {
  * @example
  * const token = await td.refreshAccessToken('refresh-token-goes-here', false)
  */
-function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
+async function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
     const params = new URLSearchParams()
     params.append('grant_type', 'refresh_token')
     if(true === createNewRefreshToken) {
@@ -66,7 +68,9 @@ function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
 
     delete this.config.accessToken
 
-    return this.axios.post('/oauth2/token', params)
+    await this.axios.post('/oauth2/token', params)
+
+    return this.config.accessToken
 } // refreshAccessToken()
 
 var refreshAccessToken = once(refreshAccessTokenOnce);
