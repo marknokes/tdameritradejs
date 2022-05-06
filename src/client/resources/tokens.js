@@ -42,7 +42,7 @@ async function getAccessToken(authCode) {
 
     await this.axios.post('/oauth2/token', params)
 
-    return this.config.accessToken
+    return Promise.resolve(this.config.accessToken)
 } // getAccessToken()
 
 /**
@@ -70,7 +70,7 @@ async function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
 
     await this.axios.post('/oauth2/token', params)
 
-    return this.config.accessToken
+    return Promise.resolve(this.config.accessToken)
 } // refreshAccessToken()
 
 var refreshAccessToken = once(refreshAccessTokenOnce);
