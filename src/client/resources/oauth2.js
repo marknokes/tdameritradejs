@@ -82,17 +82,20 @@ function authorize() {
  */
 function login(auth) {
 
-	var createNewRefreshToken
+	var createNewRefreshToken,
+        token
 
     if(true === auth) {
-        return this.authorize()
+        token = this.authorize()
     } else if (this.isRefreshTokenExpired()) {
-        return this.refreshAccessToken(null, createNewRefreshToken = true)
+        token = this.refreshAccessToken(null, createNewRefreshToken = true)
     } else if (this.isAccessTokenExpired()) {
-        return this.refreshAccessToken(null, createNewRefreshToken = false)
+        token = this.refreshAccessToken(null, createNewRefreshToken = false)
     } else {
-        return Promise.resolve(this.config.accessToken)
+        token = this.config.accessToken
     }
+
+    return Promise.resolve(token)
 
 } // login()
 
