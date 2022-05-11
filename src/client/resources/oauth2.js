@@ -80,17 +80,17 @@ function authorize() {
  *     console.log(err)
  * })
  */
-function login(auth) {
+async function login(auth) {
 
 	var createNewRefreshToken,
         token
 
     if(true === auth) {
         token = this.authorize()
-    } else if (this.isRefreshTokenExpired()) {
-        token = this.refreshAccessToken(null, createNewRefreshToken = true)
-    } else if (this.isAccessTokenExpired()) {
-        token = this.refreshAccessToken(null, createNewRefreshToken = false)
+    } else if (await this.isRefreshTokenExpired()) {
+        token = await this.refreshAccessToken(null, createNewRefreshToken = true)
+    } else if (await this.isAccessTokenExpired()) {
+        token = await this.refreshAccessToken(null, createNewRefreshToken = false)
     } else {
         token = this.config.accessToken
     }
