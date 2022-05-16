@@ -1,25 +1,5 @@
 'use strict'
 /**
- * Enclosure to prevent race condition on token refresh
- */
-function once(fn, context) {
-    var locked = false,
-        result
-
-    return function () {
-        if (false === locked) {
-            locked = true
-            result = fn.apply(context || this, arguments)
-        } else {
-            setTimeout(() => {
-                locked = false
-            }, 1000)
-        }
-        return result
-    }
-}
-
-/**
  * Get the access token along with an optional refresh token.
  *
  * @instance
@@ -57,7 +37,8 @@ async function getAccessToken(authCode) {
  * @example
  * const token = await td.refreshAccessToken('refresh-token-goes-here', false)
  */
-async function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
+
+async function refreshAccessToken(refreshToken, createNewRefreshToken) {
     const params = new URLSearchParams()
     params.append('grant_type', 'refresh_token')
     if(true === createNewRefreshToken) {
@@ -72,8 +53,6 @@ async function refreshAccessTokenOnce(refreshToken, createNewRefreshToken) {
 
     return Promise.resolve(this.config.accessToken)
 } // refreshAccessToken()
-
-var refreshAccessToken = once(refreshAccessTokenOnce);
 
 /**
  * Determine if access token is expired.
