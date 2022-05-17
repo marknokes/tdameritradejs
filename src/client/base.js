@@ -47,10 +47,10 @@ class Base {
          */
         this.axios = axios.create({
             baseURL: this.config.baseURL,
-            timeout: 3000,
+            timeout: 30000,
             httpsAgent: new https.Agent({
                 keepAlive: true,
-                timeout: 3000
+                timeout: 30001
             })
         })
 
