@@ -20,9 +20,10 @@ async function getAccessToken(authCode) {
 
     delete this.config.accessToken
 
-    await this.axios.post('/oauth2/token', params)
+    return await this.axios.post('/oauth2/token', params).then(response => {
+        return Promise.resolve(response)
+    })
 
-    return Promise.resolve(this.config.accessToken)
 } // getAccessToken()
 
 /**
@@ -49,9 +50,10 @@ async function refreshAccessToken(refreshToken, createNewRefreshToken) {
 
     delete this.config.accessToken
 
-    await this.axios.post('/oauth2/token', params)
+    return await this.axios.post('/oauth2/token', params).then(response => {
+        return Promise.resolve(response)
+    })
 
-    return Promise.resolve(this.config.accessToken)
 } // refreshAccessToken()
 
 /**
