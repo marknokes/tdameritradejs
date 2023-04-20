@@ -5,7 +5,7 @@ const defaults = require('./config')
 const EventEmitter = require('eventemitter3')
 const interceptors = require('./interceptors')
 const apiKeySuffix = '@AMER.OAUTHAP'
-
+const https = require('https')
 const tokens = require('./resources/tokens')
 
 /**
@@ -45,7 +45,14 @@ class Base {
          * @memberof TDAmeritrade
          * @type {AxiosInstance}
          */
-        this.axios = axios.create({ baseURL: this.config.baseURL })
+        this.axios = axios.create({
+            baseURL: this.config.baseURL,
+            timeout: 60000,
+            httpsAgent: new https.Agent({
+                keepAlive: true,
+                timeout: 60001
+            })
+        })
 
         interceptors.setup(this)
     }

@@ -1,5 +1,4 @@
 'use strict'
-
 /**
  * Get the access token along with an optional refresh token.
  *
@@ -11,7 +10,7 @@
  * @example
  * const token = await td.getAccessToken('authorization-code-goes-here')
  */
-function getAccessToken(authCode) {
+async function getAccessToken(authCode) {
     const params = new URLSearchParams()
     params.append('grant_type', 'authorization_code')
     params.append('access_type', this.config.accessType || 'offline')
@@ -21,7 +20,10 @@ function getAccessToken(authCode) {
 
     delete this.config.accessToken
 
-    return this.axios.post('/oauth2/token', params)
+    return await this.axios.post('/oauth2/token', params).then(response => {
+        return Promise.resolve(response)
+    })
+
 } // getAccessToken()
 
 /**
@@ -30,21 +32,28 @@ function getAccessToken(authCode) {
  * @instance
  * @memberof TDAmeritrade
  * @param {string} [refreshToken] The refresh token
+ * @param {bool} [createNewRefreshToken] True to create both access token and refresh token. False to create access token only.
  * @returns {Promise<any>} The token details
  *
  * @example
- * const token = await td.refreshAccessToken('refresh-token-goes-here')
+ * const token = await td.refreshAccessToken('refresh-token-goes-here', false)
  */
-function refreshAccessToken(refreshToken) {
+
+async function refreshAccessToken(refreshToken, createNewRefreshToken) {
     const params = new URLSearchParams()
     params.append('grant_type', 'refresh_token')
-    params.append('access_type', this.config.accessType || 'offline')
+    if(true === createNewRefreshToken) {
+        params.append('access_type', this.config.accessType || 'offline')
+    }
     params.append('client_id', this.config.apiKey)
     params.append('refresh_token', refreshToken || this.config.refreshToken)
 
     delete this.config.accessToken
 
-    return this.axios.post('/oauth2/token', params)
+    return await this.axios.post('/oauth2/token', params).then(response => {
+        return Promise.resolve(response)
+    })
+
 } // refreshAccessToken()
 
 /**
@@ -55,22 +64,21 @@ function refreshAccessToken(refreshToken) {
  * @returns {boolean} True if expired, otherwise false
  */
 function isAccessTokenExpired() {
-    return this.config.accessTokenExpiresAt
-        ? new Date(this.config.accessTokenExpiresAt).getTime() <= Date.now()
-        : true
+    return new Date(this.config.accessTokenExpiresAt).getTime() <= Date.now()
 } // isAccessTokenExpired()
 
 /**
- * Determine if refresh token is expired.
+ * Determine if refresh token is expired one day from now. We must use a valid refresh
+ * token to get new refresh and access tokens so we cannot wait for it to expire.
  *
  * @instance
  * @memberof TDAmeritrade
  * @returns {boolean} True if expired, otherwise false
  */
 function isRefreshTokenExpired() {
-    return this.config.refreshTokenExpiresAt
-        ? new Date(this.config.refreshTokenExpiresAt).getTime() <= Date.now()
-        : true
+    const expiration = new Date(this.config.refreshTokenExpiresAt)
+    expiration.setDate(expiration.getDate() - 1)
+    return expiration.getTime() <= Date.now()
 } // isRefreshTokenExpired()
 
 module.exports = {

@@ -256,6 +256,14 @@ class TDStreamer {
         )
     } // subscribe()
 
+    add(services) {
+        return this.sendRequest(
+            [].concat(services).map(service => {
+                return Object.assign({}, service, { command: COMMANDS.ADD })
+            })
+        )
+    } // add()
+
     /**
      * Unsubscribe from services updates
      *
@@ -333,6 +341,25 @@ class TDStreamer {
             },
         })
     } // subsChartEquity()
+
+    /**
+     * Add symbols to Chart Equity updates
+     *
+     * @param {string|string[]} symbols Ticker symbols to subscribe to
+     * @param {Array<'key'|'openPrice'|'highPrice'|'lowPrice'|'closePrice'|'volume'|'sequence'|'chartTime'|'chartDay'>} [fields] Fields to include (default all)
+     * @returns {object[]} The request objects sent to the server
+     */
+    addChartEquity(symbols, fields) {
+        return this.add({
+            service: SERVICES.CHART_EQUITY,
+            parameters: {
+                keys: [].concat(symbols).join(',').toUpperCase(),
+                fields: fields
+                    ? fields.map(field => FIELDS.CHART_EQUITY[field]).join(',')
+                    : '0,1,2,3,4,5,6,7', // exclude `chartDay` since it's labeled as "not useful"
+            },
+        })
+    } // addChartEquity()
 
     /**
      * Unsubscribe from Chart Equity updates

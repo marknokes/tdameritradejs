@@ -41,7 +41,7 @@ function authorize() {
             this.getAccessToken(decodeURIComponent(_url.query.code.toString()))
                 .then(data => {
                     res.writeHead(200, { 'Content-Type': 'text/html' })
-                    res.write('OK')
+                    res.write('Money, money, money! Happy trading!')
                     res.end()
                     server.close()
                     resolve(data)
@@ -80,16 +80,23 @@ function authorize() {
  *     console.log(err)
  * })
  */
-function login() {
-    if (! this.isAccessTokenExpired()) {
-        return Promise.resolve()
+async function login(auth) {
+
+	var createNewRefreshToken,
+        token
+
+    if(true === auth) {
+        token = this.authorize()
+    } else if (await this.isRefreshTokenExpired()) {
+        token = await this.refreshAccessToken(null, createNewRefreshToken = true)
+    } else if (await this.isAccessTokenExpired()) {
+        token = await this.refreshAccessToken(null, createNewRefreshToken = false)
+    } else {
+        token = this.config.accessToken
     }
 
-    if (! this.isRefreshTokenExpired()) {
-        return this.refreshAccessToken()
-    }
+    return Promise.resolve(token)
 
-    return this.authorize()
 } // login()
 
 module.exports = {
