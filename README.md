@@ -9,7 +9,7 @@ Free, open-source Node.js client for the [TD Ameritrade Trading Platform](https:
 **NOTE**
 This is a fork of @knicola/tdameritrade
 
-It is used in the automated day trading app Trade For Me [TradeForMe.money](https://tradeforme.money).
+It's used in the automated day trading app Trade For Me. Visit tradeforme.money for more information, [thinkorswim indicators and algo trading software](https://tradeforme.money).
 
 The original author says this library is still in its early stages of development and thus far from ready for production use. All of the features used by Trade For Me have been tested successfully.
 
